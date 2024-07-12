@@ -5,13 +5,13 @@ Whitelist-Gated Token Sale
 ## Features
 **Main Features**
 - [ ] Standard Token Support
-- [ ] Merkle tree, struct packing, memory alignment, and inilining optimizations
-- [ ] Multiple token bases support (1 admin set with N-many token bases)
+- [ ] Merkle tree and struct packing optimizations
+- [ ] Multiple token bases support (1 admin set with N-many token bases via nonce)
 - [ ] Jest 100% test coverage (Unit Test)
-- [ ] Protections against most-common sea-level attacks
-- [ ] Frontend client builders (Also used in TS tests)
 
 **Additional Features**
+- [ ] Protections against most-common sea-level attacks
+- [ ] Frontend client builders (Also used in TS tests)
 - [ ] Verifiable Build with Docker (Custom Docker Image)
 - [ ] Token 2022 Support
 - [ ] Multisig support
@@ -28,7 +28,7 @@ Whitelist-Gated Token Sale
 
 ## Design Documentation
 
-### Roles
+### Conceptual Roles
 - Admin/s
 - Buyer
 

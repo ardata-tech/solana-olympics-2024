@@ -41,6 +41,7 @@ impl<'a> Processor {
                 price,
                 decimals,
                 nonce,
+                whitelist_root,
             } => {
                 process_open_sale(
                     program_id,
@@ -48,6 +49,7 @@ impl<'a> Processor {
                     supply,
                     price,
                     decimals,
+                    whitelist_root,
                     nonce,
                 )?;
             }

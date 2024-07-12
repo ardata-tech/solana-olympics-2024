@@ -12,33 +12,39 @@ pub struct TokenBase {
     pub discriminator: [u8; 8],
     pub supply: u64,
     pub price: u64,
-    pub bump: u8,
+    pub vault_bump: u8,
+    pub mint: Pubkey,
     pub vault: Pubkey,
-    pub whitelist_merkle_root: [u8; 32],
+    pub whitelist_root: [u8; 32],
+    pub freeze: bool,
     pub nonce: u32,
 }
 
 impl TokenBase {
     pub const LEN: usize = std::mem::size_of::<TokenBase>();
 
-    pub fn from(
-        supply: u64,
-        price: u64,
-        vault: Pubkey,
-        whitelist_merkle_root: [u8; 32],
-        nonce: u32,
-        bump: u8,
-    ) -> Self {
-        Self {
-            discriminator: TokenBase::SPL_DISCRIMINATOR.into(),
-            supply,
-            price,
-            vault,
-            whitelist_merkle_root,
-            nonce,
-            bump,
-        }
-    }
+    // pub fn from(
+    //     supply: u64,
+    //     price: u64,
+    //     mint: Pubkey,
+    //     vault: Pubkey,
+    //     whitelist_root: [u8; 32],
+    //     nonce: u32,
+    //     vault_bump: u8,
+    //     freeze: bool,
+    // ) -> Self {
+    //     Self {
+    //         discriminator: TokenBase::SPL_DISCRIMINATOR.into(),
+    //         supply,
+    //         price,
+    //         mint,
+    //         vault,
+    //         whitelist_root,
+    //         nonce,
+    //         vault_bump,
+    //         freeze,
+    //     }
+    // }
 
     pub fn is_initialized(&self) -> bool {
         self.discriminator.as_slice() == TokenBase::SPL_DISCRIMINATOR_SLICE

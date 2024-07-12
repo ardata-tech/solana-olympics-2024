@@ -1,11 +1,10 @@
-use std::borrow::Borrow;
-
 use crate::error::TokenSaleError;
-use crate::state::TokenBase;
+use crate::state::{find_vault_pda, TokenBase};
 use crate::{
     instruction::accounts::{Context, OpenSaleAccounts},
     require,
 };
+
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::{
     entrypoint::ProgramResult, program_error::ProgramError, pubkey::Pubkey, system_instruction,
@@ -17,11 +16,13 @@ pub fn process_open_sale(
     supply: u64,
     price: u64,
     decimals: u8,
+    whitelist_root: [u8; 32],
     nonce: u32,
 ) -> ProgramResult {
     // Account Validations
 
     // 1. token_base
+    //
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
     // - account is unintialized
@@ -50,9 +51,21 @@ pub fn process_open_sale(
         "token_base"
     );
 
+    // 2. mint
+    //
+    // - owner is token_sale (this) program
+    // - correct allocation length (TokenBase::LEN)
+    // - account is unintialized
+
     // Processing Instruction
 
-    // create vault
+    // create vault ATA
+    let (vault_pda, bump) = find_vault_pda(program_id, ctx.accounts.token_base.key);
+
+    // token_base.vault = vault_pda;
+    // token_base.vault_bump = vault_bump;
+    // token_base.supply = supply;
+    // token_base.
 
     // create token_base
     Ok(())
