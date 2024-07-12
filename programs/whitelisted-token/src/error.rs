@@ -10,6 +10,15 @@ use thiserror::Error;
 pub enum TokenSaleError {
     #[error("Invalid account data length")]
     InvalidAccountDataLength, // 0
+
+    #[error("Mint and Sale authority don't match")]
+    MintAndSaleAuthorityMismatch, // 1
+
+    #[error("Vault must be non-executable")]
+    VaultMustBeNonExecutable, // 2
+
+    #[error("Sale authority not a signer")]
+    SaleAuthorityNotSigner, // 3
 }
 
 // allow .into() for Custom Error to ProgramError conversion

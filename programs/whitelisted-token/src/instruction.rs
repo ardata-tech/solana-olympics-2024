@@ -5,11 +5,9 @@ use solana_program::pubkey::Pubkey;
 /// TokenSale Instruction List
 #[derive(BorshDeserialize, BorshSerialize, Debug, ShankContext, ShankInstruction)]
 pub enum TokenSaleInstruction {
-    /// Open a TokenSale with the given config
+    /// Open a Token Sale with the given config
     ///
-    /// - Create a new mint account
-    /// - Create new associated token account (vault) to hold supply for selling
-    /// - Initialize token sale with starting configuration
+    /// Initializes the TokenBase config
     #[account(
         0,
         writable,
@@ -18,30 +16,26 @@ pub enum TokenSaleInstruction {
     )]
     #[account(
         1,
-        writable,
         name = "mint",
         desc = "Account for holding the mint details of the token being sold"
     )]
     #[account(
         2,
-        writable,
         name = "vault",
-        desc = "Associated token account for holding the mint details of the token being sold"
+        desc = "Account for holding the funds raised from token sale"
     )]
     #[account(
         3,
         signer,
-        name = "owner",
-        desc = "Account who has authority to manage the TokenBase"
+        name = "sale_authority",
+        desc = "Account who has authority to manage the token sale"
     )]
     OpenSale {
-        /// Token sale config
-        supply: u64,
+        /// Price of token
         price: u64,
-        decimals: u8,
+        /// Merkle tree root of whitelist
         whitelist_root: [u8; 32],
-
-        /// For multiple token bases per admin/s
+        /// Randomness (or index) for multiple token bases per admin/s
         nonce: u32,
     },
     // /// Reconfigure the supply / price of a specific TokenBase
