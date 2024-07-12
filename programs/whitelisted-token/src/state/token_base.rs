@@ -9,7 +9,7 @@ use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 #[derive(BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
 #[seeds(
     "token_base",
-    pubkey("sale_authority"),
+    pub_key("sale_authority", Pubkey),
     nonce("nonce (or index) for multiple token bases per admin/s", u8)
 )]
 #[discriminator_hash_input("token_sale::state:token_base")]
