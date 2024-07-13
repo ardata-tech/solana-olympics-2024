@@ -16,7 +16,7 @@ use spl_token::{error::TokenError, state::Mint};
 /// initializes the [`TokenBase`] (config)
 ///
 /// Accounts
-/// 0. `[WRITE]` `Token Base` config account, PDA generated offchain
+/// 0. `[WRITE]`    `Token Base` config account, PDA generated offchain
 /// 1. `[]`         `Mint` account
 /// 1. `[]`         `Vault` account
 /// 2. `[SIGNER]`   `Sale Authority` account

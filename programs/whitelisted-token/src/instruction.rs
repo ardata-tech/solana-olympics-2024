@@ -69,7 +69,6 @@ pub enum TokenSaleInstruction {
     )]
     #[account(
         2,
-        signer,
         name = "new_vault",
         desc = "New account for holding the funds raised from token sale"
     )]

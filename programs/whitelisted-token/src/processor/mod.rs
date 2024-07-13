@@ -1,9 +1,15 @@
-use crate::instruction::{accounts::OpenSaleAccounts, TokenSaleInstruction};
+use crate::instruction::{
+    accounts::{ConfigureSaleAccounts, OpenSaleAccounts},
+    TokenSaleInstruction,
+};
 use borsh::BorshDeserialize;
 use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey};
 
 pub mod open_sale;
 use open_sale::*;
+
+pub mod configure_sale;
+use configure_sale::*;
 
 /// Program state processor
 pub struct Processor {}
@@ -34,6 +40,21 @@ impl<'a> Processor {
                     whitelist_root,
                 )?;
             }
+
+            TokenSaleInstruction::ConfigureSale {
+                price,
+                purchase_limit,
+                whitelist_root,
+            } => {
+                process_configure_sale(
+                    program_id,
+                    ConfigureSaleAccounts::context(accounts)?,
+                    price,
+                    purchase_limit,
+                    whitelist_root,
+                )?;
+            }
+
             _ => todo!(),
         }
 
