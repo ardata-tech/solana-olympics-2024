@@ -1,2 +1,2 @@
-export * from "./whitelisted-token";
+export * from "./token-sale";
 export * from "./types";

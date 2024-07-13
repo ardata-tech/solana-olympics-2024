@@ -7,7 +7,8 @@
     "vbuild:token_sale": "scripts/verifiable-build.sh token_sale",
     "test": "jest --verbose ./tests/",
     "test:token_sale": "jest ./tests/counter/unit/initialize.test.ts",
-	"shank:idl": "shank idl --crate-root ./programs/token_sale --out-dir ./programs/target/deploy"
+	"shank:idl:dev": "shank idl --crate-root ./programs/token_sale --out-dir ./programs/target/deploy",
+	"shank:idl:prod": "shank idl --crate-root ./programs/token_sale --out-dir ./client/programs/token_sale"
   },
   "dependencies": {
     "@solana/web3.js": "^1.93.2",
