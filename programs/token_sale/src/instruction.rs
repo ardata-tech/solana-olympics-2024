@@ -129,17 +129,19 @@ pub enum TokenSaleInstruction {
         name = "buyer",
         desc = "Account who is buying from token sale and will pay for the fees"
     )]
-    BuyToken { amount: u64, proof: Vec<OwnNode> },
+    BuyToken {
+        amount: u64, // , proof: Vec<OwnNode>
+    },
 }
 
-#[derive(BorshDeserialize)]
-pub enum OwnSide {
-    LEFT,
-    RIGHT,
-}
-
-#[derive(BorshDeserialize)]
-pub struct OwnNode {
-    data: [u8; 32],
-    side: OwnSide,
-}
+// #[derive(BorshDeserialize)]
+// pub enum OwnSide {
+//     LEFT,
+//     RIGHT,
+// }
+//
+// #[derive(BorshDeserialize)]
+// pub struct OwnNode {
+//     data: [u8; 32],
+//     side: OwnSide,
+// }
