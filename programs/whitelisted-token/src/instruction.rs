@@ -2,16 +2,25 @@ use borsh::{BorshDeserialize, BorshSerialize};
 use shank::{ShankContext, ShankInstruction};
 
 /// TokenSale Instruction List
+///
+/// For Token Sale Authority:
+/// - OpenSale
+/// - ConfigureSale
+/// - CloseSale
+///
+/// For Buyer:
+/// - BuyToken
+///
 #[derive(BorshDeserialize, BorshSerialize, Debug, ShankContext, ShankInstruction)]
 pub enum TokenSaleInstruction {
-    /// Open a token sale with the given config
+    /// Open a token sale by initializing the [`TokenBase`] config
     ///
-    /// Initializes the [`TokenBase`] config
+    /// For Token Sale Authority
     #[account(
         0,
         writable,
         name = "token_base",
-        desc = "Account (TokenBase PDA) holding token sale configuration. Seeds ['token_base', `token_sale::state::sale_auhority`, `instruction_data::nonce`]"
+        desc = "Account (TokenBase PDA) holding token sale configuration. Seeds ['token_base', `token_base::mint`]"
     )]
     #[account(
         1,
@@ -32,22 +41,78 @@ pub enum TokenSaleInstruction {
     OpenSale {
         /// Price of token
         price: u64,
+        /// Amount of tokens allowed per buyer wallet
+        purchase_limit: u64,
         /// Merkle tree root of whitelist
         whitelist_root: [u8; 32],
-        /// Randomness (or index) for multiple token bases per admin/s
-        nonce: u8,
     },
-    // /// Reconfigure the supply / price of a specific TokenBase
-    // ConfigureSale {
-    //     new_price: u64,
-    //     nonce: u32,
-    // },
-    //
-    // CloseSale {
-    //     nonce: u32,
-    // },
-    //
-    // BuyToken {
-    //     amount: u64,
-    // },
+
+    /// Configure TokenBase config for token sale
+    ///
+    /// - vault
+    /// - price
+    /// - purchase_limit
+    /// - whitelist_root
+    ///
+    /// For Token Sale Authority
+    #[account(
+        0,
+        writable,
+        name = "token_base",
+        desc = "Account (TokenBase PDA) holding token sale configuration. Seeds ['token_base', `token_base::mint`]"
+    )]
+    #[account(
+        1,
+        signer,
+        name = "sale_authority",
+        desc = "Account who has authority to manage the token sale"
+    )]
+    #[account(
+        2,
+        signer,
+        name = "new_vault",
+        desc = "New account for holding the funds raised from token sale"
+    )]
+    ConfigureSale {
+        /// Price of token
+        price: u64,
+        /// Amount of tokens allowed per buyer wallet
+        purchase_limit: u64,
+        /// Merkle tree root of whitelist
+        whitelist_root: [u8; 32],
+    },
+
+    /// Set new whitelist Merkle tree root
+    ///
+    /// For Token Sale Authority
+    #[account(
+        0,
+        writable,
+        name = "token_base",
+        desc = "Account (TokenBase PDA) holding token sale configuration. Seeds ['token_base', `token_base::mint`]"
+    )]
+    #[account(
+        1,
+        signer,
+        name = "sale_authority",
+        desc = "Account who has authority to manage the token sale"
+    )]
+    CloseSale,
+
+    /// Set new whitelist Merkle tree root
+    ///
+    /// For Buyers
+    #[account(
+        0,
+        writable,
+        name = "token_base",
+        desc = "Account (TokenBase PDA) holding token sale configuration. Seeds ['token_base', `token_base::mint`]"
+    )]
+    #[account(
+        1,
+        signer,
+        name = "sale_authority",
+        desc = "Account who has authority to manage the token sale"
+    )]
+    BuyToken { amount: u64 },
 }
