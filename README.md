@@ -60,10 +60,10 @@ pub struct TokenBase {
     pub mint: Pubkey,
     /// Account holding the SOL from token sale
     pub vault: Pubkey,
-    /// Account holding the SOL from token sale
-    pub whitelist_root: [u8; 32],
-    /// Merkle root hash used to verify passed Merkle proofs
+    /// Merkle root hash used to verify passed Merkle proofj
     /// for whitelist gating
+    pub whitelist_root: [u8; 32],
+    /// Identifier for this specific structure
     pub discriminator: [u8; 8],
     /// Amount of lamports to transfer from Buyer to Vault 
     /// when purchasing tokens
