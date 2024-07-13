@@ -85,7 +85,7 @@ pub fn process_configure_sale(
 
     // - must be signer
     require!(
-        !sale_authority.is_signer,
+        sale_authority.is_signer,
         TokenSaleError::SaleAuthorityNotSigner,
         "sale_authority"
     );

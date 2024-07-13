@@ -74,7 +74,7 @@ pub fn process_close_sale(program_id: &Pubkey, ctx: Context<CloseSaleAccounts>) 
 
     // - must be signer
     require!(
-        !sale_authority.is_signer,
+        sale_authority.is_signer,
         TokenSaleError::SaleAuthorityNotSigner,
         "sale_authority"
     );

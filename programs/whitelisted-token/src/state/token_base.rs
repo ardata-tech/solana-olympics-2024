@@ -6,20 +6,13 @@ use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 // TODO: Struct packing, Cache-line optimization
 /// TokenBase holding the token sale configuraiton
 #[rustfmt::skip] // ensure manual struct ordering
-#[repr(C)]
+#[repr(C)] // use C memory layout
 #[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
 #[discriminator_hash_input("token_sale::state:token_base")]
 // OPT-OUT: didn't use #[seeds()] because ShankAccount seeds
 // helper attribute is buggy. PDA is generated offchain
 // instead and seeds are validated on OpenSale
 pub struct TokenBase {
-    /// Identifier for this specific structure
-    pub discriminator: [u8; 8],
-    /// Amount of lamports to transfer from Buyer to Vault 
-    /// when purchasing tokens
-    pub price: u64,
-    /// Amount of tokens allowed per buyer wallet
-    pub purchase_limit: u64,
     /// Authority that can configure token sale after initialization
     pub sale_authority: Pubkey,
     /// Mint created external to this program
@@ -28,8 +21,19 @@ pub struct TokenBase {
     pub vault: Pubkey,
     /// Account holding the SOL from token sale
     pub whitelist_root: [u8; 32],
+    /// Identifier for this specific structure
+    pub discriminator: [u8; 8],
+    /// Amount of lamports to transfer from Buyer to Vault 
+    /// when purchasing tokens
+    pub price: u64,
+    /// Amount of tokens allowed per buyer wallet
+    pub purchase_limit: u64,
     /// Canonical bump for TokenBase PDA
-    pub bump: u8
+    pub bump: u8,
+
+    /// Padding to remove SLOP in C memory layout alignment
+    /// Widest scalar = 32bytes
+    _padding: [u8; 7]
 }
 
 impl TokenBase {

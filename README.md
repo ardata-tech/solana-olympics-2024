@@ -4,20 +4,16 @@ Whitelist-Gated Token Sale
 
 ## Features
 **Main Features**
-- [ ] Standard Token Support
-- [ ] Merkle tree and struct packing optimizations
-- [ ] Multiple token bases support (1 admin set with N-many token bases via nonce)
-- [ ] Jest 100% test coverage (Unit Test)
-
-**Additional Features**
-- [ ] Protections against most-common sea-level attacks
-- [ ] Frontend client builders (Also used in TS tests)
+- [ ] Merkle tree whitelist optimization
+- [ ] Struct packing optimizations
 - [ ] Verifiable Build with Docker (Custom Docker Image)
+- [ ] Jest 100% test coverage
+- [ ] Frontend client builders (Also used in TS tests)
+
+**Additional Features (If I still have time)**
+- [ ] Protections against most-common sea-level attacks
 - [ ] Token 2022 Support
 - [ ] Multisig support
-
-**More Features**
-- [ ] Super Mario Series Hosted via Solana Program
 
 ## Usage
 
@@ -25,11 +21,10 @@ Whitelist-Gated Token Sale
 
 ## Development
 
-
 ## Design Documentation
 
 ### Conceptual Roles
-- Admin/s
+- Sale Authority
 - Buyer
 
 <hr />
@@ -40,8 +35,6 @@ Whitelist-Gated Token Sale
 
 `OpenSale`
 - initialize token sale with starting configuration
-- mint new token
-- create new token account to hold supply
 
 `ConfigureSale`
 - change variables in token sale
@@ -58,9 +51,25 @@ Whitelist-Gated Token Sale
 
 ### State
 
-`TokenBase`
-- `supply`
-- `price`
-- `whitelist_merkle_root`
-- `nonce` to allow multiple TokenBases
-- `bump (canonical)`
+```rust
+/// Structure holding the token sale configuraiton
+pub struct TokenBase {
+    /// Identifier for this specific structure
+    pub discriminator: [u8; 8],
+    /// Amount of lamports to transfer from Buyer to Vault 
+    /// when purchasing tokens
+    pub price: u64,
+    /// Amount of tokens allowed per buyer wallet
+    pub purchase_limit: u64,
+    /// Authority that can configure token sale after initialization
+    pub sale_authority: Pubkey,
+    /// Mint created external to this program
+    pub mint: Pubkey,
+    /// Account holding the SOL from token sale
+    pub vault: Pubkey,
+    /// Account holding the SOL from token sale
+    pub whitelist_root: [u8; 32],
+    /// Canonical bump for TokenBase PDA
+    pub bump: u8
+}
+```

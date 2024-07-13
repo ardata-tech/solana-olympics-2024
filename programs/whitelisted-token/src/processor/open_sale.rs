@@ -102,7 +102,7 @@ pub fn process_open_sale(
     // - not executable
     require!(
         !vault.executable,
-        TokenSaleError::VaultMustBeNonExecutable,
+        TokenSaleError::MustBeNonExecutable,
         "vault"
     );
 
@@ -115,13 +115,13 @@ pub fn process_open_sale(
     // - not executable
     require!(
         !sale_authority.executable,
-        TokenSaleError::VaultMustBeNonExecutable,
+        TokenSaleError::MustBeNonExecutable,
         "sale_authority"
     );
 
     // - must be signer
     require!(
-        !sale_authority.is_signer,
+        sale_authority.is_signer,
         TokenSaleError::SaleAuthorityNotSigner,
         "sale_authority"
     );
