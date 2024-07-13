@@ -1,6 +1,6 @@
 use crate::merkle::{pubkey_to_sha256_leaf, verify_membership};
 use borsh::{BorshDeserialize, BorshSerialize};
-use merkletreers::{merkle_proof_check::merkle_proof_check, Leaf, Proof};
+use merkletreers::Proof;
 use shank::ShankAccount;
 use solana_program::{program_error::ProgramError, pubkey::Pubkey};
 use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
@@ -23,9 +23,6 @@ pub struct TokenBase {
     pub mint: Pubkey,
     /// Account holding the SOL from token sale
     pub vault: Pubkey,
-    /// Merkle root hash used to verify passed Merkle proof
-    /// for whitelist gating
-    pub whitelist_root: [u8; 32],
     /// Identifier for this specific structure
     pub discriminator: [u8; 8],
     /// Amount of lamports to transfer from Buyer to Vault 

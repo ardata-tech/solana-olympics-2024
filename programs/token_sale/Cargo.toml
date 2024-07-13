@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 borsh = "1.5.1"
+bytemuck = "1.16.1"
 hex = "0.4.3"
 merkletreers = "1.2.0"
 num-derive = "0.4.2"

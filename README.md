@@ -4,10 +4,9 @@ Whitelist-Gated Token Sale
 
 ## Features
 **Main Features**
-- [x] Merkle tree whitelist
+- [x] Whitelist-Gated Token Sale
 - [x] Struct packing optimizations
 - [x] Verifiable Build with Docker (Custom Docker Image)
-- [x] WASM interop for Merkle tree algorithm consistency
 - [ ] Frontend client builders (Also used in TS tests)
 
 **Additional Features (If I still have time)**
