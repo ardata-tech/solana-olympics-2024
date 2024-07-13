@@ -1,6 +1,8 @@
+use crate::merkle::{pubkey_to_sha256_leaf, verify_membership};
 use borsh::{BorshDeserialize, BorshSerialize};
+use merkletreers::{merkle_proof_check::merkle_proof_check, Leaf, Proof};
 use shank::ShankAccount;
-use solana_program::pubkey::Pubkey;
+use solana_program::{program_error::ProgramError, pubkey::Pubkey};
 use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 
 // OPT-OUT: didn't use #[seeds()] because ShankAccount seeds
@@ -54,9 +56,12 @@ impl TokenBase {
     }
 
     /// Is `true` if buyer is in Merkle Tree whitelist.
-    /// To maintain data integrity and consistency in indices, the whitelist assumes
-    /// that the passed whitelist is sorted
-    pub fn is_whitelisted(&self, buyer: &Pubkey) -> bool {
-        false
+    pub fn is_whitelisted(&self, buyer: Pubkey, proof: Proof) -> Result<bool, ProgramError> {
+        let member = match pubkey_to_sha256_leaf(&buyer) {
+            Ok(m) => m,
+            Err(e) => return Err(e),
+        };
+
+        Ok(verify_membership(self.whitelist_root, proof, member))
     }
 }

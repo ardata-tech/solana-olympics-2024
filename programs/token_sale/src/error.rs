@@ -25,6 +25,9 @@ pub enum TokenSaleError {
 
     #[error("Account not yet initialized")]
     AccountUninitialized, // 5
+    //
+    #[error("Failed to decode hash")]
+    FailedToDecodeSha256Hash, // 6
 }
 
 // allow .into() for Custom Error to ProgramError conversion
