@@ -1,5 +1,4 @@
 use borsh::{BorshDeserialize, BorshSerialize};
-use rs_merkle::MerkleProof::verify;
 use shank::ShankAccount;
 use solana_program::pubkey::Pubkey;
 use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
