@@ -36,6 +36,7 @@ pub fn process_configure_sale(
     //
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
+    // - account is intialized
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // - owner is token_sale (this) program
@@ -53,9 +54,16 @@ pub fn process_configure_sale(
         "token_base"
     );
 
-    // - token_base seeds must be ["token_base", pubkey(mint)]
+    // - account is intialized
     let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
-    let (token_base_pda, token_base_bump) = find_token_base_pda(program_id, &token_base.mint);
+    require!(
+        token_base.is_initialized(),
+        TokenSaleError::AccountUninitialized,
+        "token_base"
+    );
+
+    // - token_base seeds must be ["token_base", pubkey(mint)]
+    let (token_base_pda, _) = find_token_base_pda(program_id, &token_base.mint);
     require!(
         *ctx.accounts.token_base.key == token_base_pda,
         TokenSaleError::UnexpectedPDASeeds,
@@ -71,7 +79,7 @@ pub fn process_configure_sale(
     // - not executable
     require!(
         !sale_authority.executable,
-        TokenSaleError::VaultMustBeNonExecutable,
+        TokenSaleError::MustBeNonExecutable,
         "sale_authority"
     );
 
@@ -90,7 +98,7 @@ pub fn process_configure_sale(
     // - not executable
     require!(
         !new_vault.executable,
-        TokenSaleError::VaultMustBeNonExecutable,
+        TokenSaleError::MustBeNonExecutable,
         "new_vault"
     );
 

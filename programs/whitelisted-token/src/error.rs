@@ -14,14 +14,17 @@ pub enum TokenSaleError {
     #[error("Mint and Sale authority don't match")]
     MintAndSaleAuthorityMismatch, // 1
 
-    #[error("Vault must be non-executable")]
-    VaultMustBeNonExecutable, // 2
+    #[error("Account must be non-executable")]
+    MustBeNonExecutable, // 2
 
     #[error("Sale authority not a signer")]
     SaleAuthorityNotSigner, // 3
-    //
+
     #[error("Unexpected PDA seeds")]
     UnexpectedPDASeeds, // 4
+
+    #[error("Account not yet initialized")]
+    AccountUninitialized, // 5
 }
 
 // allow .into() for Custom Error to ProgramError conversion

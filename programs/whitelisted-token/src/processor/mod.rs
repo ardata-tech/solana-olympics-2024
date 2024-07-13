@@ -1,5 +1,5 @@
 use crate::instruction::{
-    accounts::{ConfigureSaleAccounts, OpenSaleAccounts},
+    accounts::{CloseSaleAccounts, ConfigureSaleAccounts, OpenSaleAccounts},
     TokenSaleInstruction,
 };
 use borsh::BorshDeserialize;
@@ -10,6 +10,9 @@ use open_sale::*;
 
 pub mod configure_sale;
 use configure_sale::*;
+
+pub mod close_sale;
+use close_sale::*;
 
 /// Program state processor
 pub struct Processor {}
@@ -53,6 +56,10 @@ impl<'a> Processor {
                     purchase_limit,
                     whitelist_root,
                 )?;
+            }
+
+            TokenSaleInstruction::CloseSale => {
+                process_close_sale(program_id, CloseSaleAccounts::context(accounts)?)?;
             }
 
             _ => todo!(),
