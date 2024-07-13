@@ -44,7 +44,7 @@ pub fn process_close_sale(program_id: &Pubkey, ctx: Context<CloseSaleAccounts>) 
     );
 
     // - account is initialized
-    let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
+    let token_base = TokenBase::try_from_slice(&token_base_data)?;
     require!(
         token_base.is_initialized(),
         TokenSaleError::AccountUninitialized,
