@@ -6,10 +6,8 @@
     "build:token_sale": "scripts/build.sh token_sale",
     "vbuild:token_sale": "scripts/verifiable-build.sh token_sale",
     "test": "jest --verbose ./tests/",
-    "test:local": "",
     "test:token_sale": "jest ./tests/counter/unit/initialize.test.ts",
-    "clean:docker": "",
-    "cli": ""
+	"shank:idl": "shank idl --crate-root ./programs/token_sale --out-dir ./programs/target/deploy"
   },
   "dependencies": {
     "@solana/web3.js": "^1.93.2",
