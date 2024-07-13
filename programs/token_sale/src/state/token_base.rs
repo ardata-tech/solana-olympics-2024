@@ -1,17 +1,20 @@
 use borsh::{BorshDeserialize, BorshSerialize};
+use rs_merkle::MerkleProof::verify;
 use shank::ShankAccount;
 use solana_program::pubkey::Pubkey;
 use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 
-// TODO: Struct packing, Cache-line optimization
-/// TokenBase holding the token sale configuraiton
-#[rustfmt::skip] // ensure manual struct ordering
-#[repr(C)] // use C memory layout
-#[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
-#[discriminator_hash_input("token_sale::state:token_base")]
 // OPT-OUT: didn't use #[seeds()] because ShankAccount seeds
 // helper attribute is buggy. PDA is generated offchain
 // instead and seeds are validated on OpenSale
+
+// TODO: Cache-line optimization (if I have time left)
+
+#[repr(C)]
+#[rustfmt::skip] // ensure manual struct ordering
+#[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
+#[discriminator_hash_input("token_sale::state:token_base")]
+/// TokenBase holding the token sale configuraiton
 pub struct TokenBase {
     /// Authority that can configure token sale after initialization
     pub sale_authority: Pubkey,
@@ -49,5 +52,12 @@ impl TokenBase {
     /// Is `true` if TokenBase is uninitialized
     pub fn is_uninitialized(&self) -> bool {
         self.discriminator.as_slice() == ArrayDiscriminator::UNINITIALIZED.as_slice()
+    }
+
+    /// Is `true` if buyer is in Merkle Tree whitelist.
+    /// To maintain data integrity and consistency in indices, the whitelist assumes
+    /// that the passed whitelist is sorted
+    pub fn is_whitelisted(&self, buyer: &Pubkey) -> bool {
+        false
     }
 }

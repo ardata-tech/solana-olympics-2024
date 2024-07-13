@@ -115,6 +115,11 @@ pub enum TokenSaleInstruction {
     )]
     #[account(
         1,
+        name = "buyer_token_account",
+        desc = "Account of owned by the buyer where newly bought tokens get transferred to"
+    )]
+    #[account(
+        2,
         signer,
         name = "buyer",
         desc = "Account who is buying from token sale and will pay for the fees"
