@@ -1,5 +1,15 @@
 use solana_program::pubkey::Pubkey;
 
-pub fn find_vault_pda(program_id: &Pubkey, token_base: &Pubkey) -> (Pubkey, u8) {
-    Pubkey::find_program_address(&["vault".as_bytes(), token_base.as_ref()], program_id)
+/// Finds the [`TokenBase`] PDA with canonical bump
+///
+/// Used for validating TokenBase
+pub fn find_token_base_pda(
+    program_id: &Pubkey,
+    sale_authority: &Pubkey,
+    nonce: u8,
+) -> (Pubkey, u8) {
+    Pubkey::find_program_address(
+        &["token_base".as_bytes(), sale_authority.as_ref(), &[nonce]],
+        program_id,
+    )
 }

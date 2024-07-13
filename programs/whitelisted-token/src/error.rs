@@ -19,6 +19,9 @@ pub enum TokenSaleError {
 
     #[error("Sale authority not a signer")]
     SaleAuthorityNotSigner, // 3
+    //
+    #[error("Unexpected PDA seeds")]
+    UnexpectedPDASeeds, // 4
 }
 
 // allow .into() for Custom Error to ProgramError conversion

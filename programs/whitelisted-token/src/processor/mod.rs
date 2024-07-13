@@ -37,18 +37,14 @@ impl<'a> Processor {
         let instruction = TokenSaleInstruction::try_from_slice(instruction_data)?;
         match instruction {
             TokenSaleInstruction::OpenSale {
-                supply,
                 price,
-                decimals,
                 nonce,
                 whitelist_root,
             } => {
                 process_open_sale(
                     program_id,
                     OpenSaleAccounts::context(accounts)?,
-                    supply,
                     price,
-                    decimals,
                     whitelist_root,
                     nonce,
                 )?;

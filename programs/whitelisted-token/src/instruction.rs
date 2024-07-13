@@ -1,18 +1,17 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use shank::{ShankContext, ShankInstruction};
-use solana_program::pubkey::Pubkey;
 
 /// TokenSale Instruction List
 #[derive(BorshDeserialize, BorshSerialize, Debug, ShankContext, ShankInstruction)]
 pub enum TokenSaleInstruction {
-    /// Open a Token Sale with the given config
+    /// Open a token sale with the given config
     ///
-    /// Initializes the TokenBase config
+    /// Initializes the [`TokenBase`] config
     #[account(
         0,
         writable,
         name = "token_base",
-        desc = "Account (TokenBase) holding token sale configuration"
+        desc = "Account (TokenBase PDA) holding token sale configuration. Seeds ['token_base', `token_sale::state::sale_auhority`, `instruction_data::nonce`]"
     )]
     #[account(
         1,
@@ -36,11 +35,10 @@ pub enum TokenSaleInstruction {
         /// Merkle tree root of whitelist
         whitelist_root: [u8; 32],
         /// Randomness (or index) for multiple token bases per admin/s
-        nonce: u32,
+        nonce: u8,
     },
     // /// Reconfigure the supply / price of a specific TokenBase
     // ConfigureSale {
-    //     new_supply: u128,
     //     new_price: u64,
     //     nonce: u32,
     // },

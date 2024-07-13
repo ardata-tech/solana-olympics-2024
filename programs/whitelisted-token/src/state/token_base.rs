@@ -4,22 +4,27 @@ use solana_program::pubkey::Pubkey;
 use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 
 // TODO: Struct packing, Cache-line optimization
+/// TokenBase holding the token sale configuraiton
 #[rustfmt::skip] // ensure manual struct ordering
 #[repr(C)]
-#[derive(BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
-#[seeds(
-    "token_base",
-    pub_key("sale_authority", Pubkey),
-    nonce("nonce (or index) for multiple token bases per admin/s", u8)
-)]
+#[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
 #[discriminator_hash_input("token_sale::state:token_base")]
 pub struct TokenBase {
+    /// Identifier for this specific data structure
     pub discriminator: [u8; 8],
+    /// Amount of lamports to transfer from Buyer to Vault 
+    /// when purchasing tokens
     pub price: u64,
+    /// Authority that can 
     pub sale_authority: Pubkey,
+    /// Mint created external to this program
     pub mint: Pubkey,
-    pub vault: Pubkey, // hold the SOL from token sale
+    /// Account holding the SOL from token sale
+    pub vault: Pubkey,
+    /// Account holding the SOL from token sale
     pub whitelist_root: [u8; 32],
+    /// Canonical bump for TokenBase PDA
+    pub bump: u8
 }
 
 impl TokenBase {

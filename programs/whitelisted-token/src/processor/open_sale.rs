@@ -1,13 +1,12 @@
 use crate::error::TokenSaleError;
-use crate::state::TokenBase;
+use crate::state::{find_token_base_pda, TokenBase};
 use crate::{
     instruction::accounts::{Context, OpenSaleAccounts},
     require,
 };
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::BorshDeserialize;
 use solana_program::{
     entrypoint::ProgramResult, program_error::ProgramError, program_pack::Pack, pubkey::Pubkey,
-    system_instruction,
 };
 use spl_token::{error::TokenError, state::Mint};
 
@@ -17,7 +16,7 @@ use spl_token::{error::TokenError, state::Mint};
 /// initializes the [`TokenBase`] (config)
 ///
 /// Accounts
-/// 0. `[WRITE]` `Token Base` config account, PDA
+/// 0. `[WRITE]` `Token Base` config account, PDA generated offchain
 /// 1. `[]`         `Mint` account
 /// 1. `[]`         `Vault` account
 /// 2. `[SIGNER]`   `Sale Authority` account
@@ -30,6 +29,7 @@ pub fn process_open_sale(
     ctx: Context<OpenSaleAccounts>,
     price: u64,
     whitelist_root: [u8; 32],
+    nonce: u8,
 ) -> ProgramResult {
     //---------- Account Validations ----------
 
@@ -38,6 +38,7 @@ pub fn process_open_sale(
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
     // - account is unintialized
+    // - token_base seeds must be ["token_base", pubkey(sale_authority), nonce]
     let token_base_data = ctx.accounts.token_base.try_borrow_mut_data()?;
     let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
 
@@ -59,6 +60,15 @@ pub fn process_open_sale(
     require!(
         token_base.is_uninitialized(),
         ProgramError::AccountAlreadyInitialized,
+        "token_base"
+    );
+
+    // - token_base seeds must be ["token_base", pubkey(sale_authority), nonce]
+    let (token_base_pda, token_base_bump) =
+        find_token_base_pda(program_id, &token_base.sale_authority, nonce);
+    require!(
+        *ctx.accounts.token_base.key == token_base_pda,
+        TokenSaleError::UnexpectedPDASeeds,
         "token_base"
     );
 
@@ -125,6 +135,7 @@ pub fn process_open_sale(
     token_base.sale_authority = *sale_authority.key;
     token_base.whitelist_root = whitelist_root;
     token_base.price = price;
+    token_base.bump = token_base_bump; // store canonical bump
 
     Ok(())
 }

@@ -1,5 +1,5 @@
 [package]
-name = "whitelisted_token"
+name = "token_sale"
 version = "0.1.0"
 edition = "2021"
 
@@ -14,5 +14,5 @@ spl-token = "6.0.0"
 thiserror = "1.0.61"
 
 [lib]
-name="whitelisted_token"
+name="token_sale"
 crate-type = ["cdylib", "rlib"]
