@@ -36,7 +36,7 @@ pub fn process_configure_sale(
     //
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
-    // - account is intialized
+    // - account is initialized
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // - owner is token_sale (this) program
@@ -54,7 +54,7 @@ pub fn process_configure_sale(
         "token_base"
     );
 
-    // - account is intialized
+    // - account is initialized
     let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
     require!(
         token_base.is_initialized(),

@@ -19,7 +19,7 @@ pub struct TokenBase {
     pub mint: Pubkey,
     /// Account holding the SOL from token sale
     pub vault: Pubkey,
-    /// Merkle root hash used to verify passed Merkle proofj
+    /// Merkle root hash used to verify passed Merkle proof
     /// for whitelist gating
     pub whitelist_root: [u8; 32],
     /// Identifier for this specific structure

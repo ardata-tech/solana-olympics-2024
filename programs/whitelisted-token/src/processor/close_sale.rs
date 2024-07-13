@@ -25,7 +25,7 @@ pub fn process_close_sale(program_id: &Pubkey, ctx: Context<CloseSaleAccounts>) 
     //
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
-    // - account is intialized
+    // - account is initialized
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // - owner is token_sale (this) program
@@ -43,8 +43,8 @@ pub fn process_close_sale(program_id: &Pubkey, ctx: Context<CloseSaleAccounts>) 
         "token_base"
     );
 
-    // - account is intialized
-    let token_base = TokenBase::try_from_slice(&token_base_data)?;
+    // - account is initialized
+    let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
     require!(
         token_base.is_initialized(),
         TokenSaleError::AccountUninitialized,
@@ -82,5 +82,27 @@ pub fn process_close_sale(program_id: &Pubkey, ctx: Context<CloseSaleAccounts>) 
     //---------- Data Validations (if any) ----------
 
     //---------- Executing Instruction ----------
+
+    // token_base
+    let token_base_account_info = ctx.accounts.token_base;
+    let token_base_lamports = token_base_account_info.lamports();
+
+    // sale_authority
+    let sale_authority_account_info = ctx.accounts.sale_authority;
+    let sale_authority_lamports = sale_authority_account_info.lamports();
+
+    // NOTE: Direct transfer is okay since token_base is a PDA owned by sale_authority
+    // direct transfer token_base (PDA) lamports into sale_authority
+    **sale_authority_account_info.try_borrow_mut_lamports()? = sale_authority_lamports
+        .checked_add(token_base_lamports) // None if overflow
+        .unwrap();
+
+    // zero out token_base (PDA) lamports
+    **token_base_account_info.try_borrow_mut_lamports()? = 0;
+
+    // zero out the token_base (PDA) data
+    let mut token_base_data = token_base_account_info.try_borrow_mut_data()?;
+    token_base_data.fill(0);
+
     Ok(())
 }
