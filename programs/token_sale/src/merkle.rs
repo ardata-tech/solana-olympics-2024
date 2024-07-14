@@ -1,9 +1,27 @@
 /// Onchain Merkle Tree utils
 use crate::error::TokenSaleError;
+use borsh::{BorshDeserialize, BorshSerialize};
 use hex::decode;
 use merkletreers::{merkle_proof_check::merkle_proof_check, Leaf, Proof, Root};
 use sha256::digest;
 use solana_program::{program_error::ProgramError, pubkey::Pubkey};
+
+/// borsh de/serializable Merkle Proof primitive
+pub type WhitelistProof = Vec<WhitelistNode>;
+
+/// borsh de/serializable Merkle Side primitive
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub enum WhitelistSide {
+    LEFT,
+    RIGHT,
+}
+
+/// borsh de/serializable Merkle Node primitive
+#[derive(BorshSerialize, BorshDeserialize, Debug)]
+pub struct WhitelistNode {
+    data: [u8; 32],
+    side: WhitelistSide,
+}
 
 /// Verify membership
 pub fn verify_membership(root: Root, proof: Proof, member: Leaf) -> bool {
