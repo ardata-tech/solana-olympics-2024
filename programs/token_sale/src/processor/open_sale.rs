@@ -89,7 +89,7 @@ pub fn process_open_sale(
 
     // - mint_authority is token_base sale_authority
     require!(
-        mint_state.mint_authority == token_base.sale_authority.into(),
+        mint_state.mint_authority.unwrap() == token_base.sale_authority,
         TokenSaleError::MintAndSaleAuthorityMismatch,
         "mint"
     );

@@ -25,9 +25,18 @@ pub enum TokenSaleError {
 
     #[error("Account not yet initialized")]
     AccountUninitialized, // 5
-    //
+
     #[error("Failed to decode hash")]
     FailedToDecodeSha256Hash, // 6
+
+    #[error("Invalid SPL Token Program")]
+    InvalidTokenProgramID, // 7
+
+    #[error("Mint and Sale authority don't match")]
+    AccountsAndTokenBaseMismatch, // 8
+
+    #[error("Not whitelisted")]
+    NotWhitelisted, // 9
 }
 
 // allow .into() for Custom Error to ProgramError conversion

@@ -118,14 +118,36 @@ pub enum TokenSaleInstruction {
     )]
     #[account(
         1,
+        name = "mint",
+        desc = "Account for holding the mint details of the token being sold"
+    )]
+    #[account(
+        2,
+        writable,
+        name = "vault",
+        desc = "Account for holding the funds raised from token sale"
+    )]
+    #[account(
+        3,
+        name = "sale_authority",
+        desc = "Account who has authority to manage the token sale"
+    )]
+    #[account(
+        4,
         name = "buyer_token_account",
         desc = "Account owned by the buyer where newly bought tokens get transferred to"
     )]
     #[account(
-        2,
+        5,
+        name = "buyer_facts",
+        desc = "Account (BuyerFacts PDA) holding user specific statistics. Seeds ['buyer_facts', `pubkey(buyer)`, `pubkey(mint)`]"
+    )]
+    #[account(
+        6,
         signer,
         name = "buyer",
         desc = "Account who is buying from token sale and will pay for the fees"
     )]
+    #[account(7, name = "token_program", desc = "Official SPL Token Program")]
     BuyToken { amount: u64, proof: WhitelistProof },
 }

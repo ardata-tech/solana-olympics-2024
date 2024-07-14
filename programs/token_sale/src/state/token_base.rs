@@ -1,6 +1,6 @@
+use crate::merkle::WhitelistProof;
 use crate::merkle::{pubkey_to_sha256_leaf, verify_membership};
 use borsh::{BorshDeserialize, BorshSerialize};
-use merkletreers::Proof;
 use shank::ShankAccount;
 use solana_program::{program_error::ProgramError, pubkey::Pubkey};
 use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
@@ -57,8 +57,12 @@ impl TokenBase {
     }
 
     /// Is `true` if buyer is in Merkle Tree whitelist.
-    pub fn is_whitelisted(&self, buyer: Pubkey, proof: Proof) -> Result<bool, ProgramError> {
-        let member = match pubkey_to_sha256_leaf(&buyer) {
+    pub fn is_whitelisted(
+        &self,
+        buyer: &Pubkey,
+        proof: WhitelistProof,
+    ) -> Result<bool, ProgramError> {
+        let member = match pubkey_to_sha256_leaf(buyer) {
             Ok(m) => m,
             Err(e) => return Err(e),
         };

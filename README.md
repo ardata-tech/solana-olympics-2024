@@ -51,8 +51,10 @@ Merkle Tree Whitelist-Gated Token Sale
 
 ### State
 
+**`TokenBase`**
+
 ```rust
-/// Structure holding the token sale configuraiton
+/// TokenBase holding the token sale configuraiton
 pub struct TokenBase {
     /// Authority that can configure token sale after initialization
     pub sale_authority: Pubkey,
@@ -68,13 +70,32 @@ pub struct TokenBase {
     /// Amount of lamports to transfer from Buyer to Vault 
     /// when purchasing tokens
     pub price: u64,
-    /// Amount of tokens allowed per buyer wallet
-    pub purchase_limit: u64,
+    /// Default purchase limit per user can be changed
+    /// per wallet via AssignLimit
+    pub default_purchase_limit: u64,
     /// Canonical bump for TokenBase PDA
     pub bump: u8,
 
     /// Padding to remove SLOP in C memory layout alignment
     /// Widest scalar = 32bytes
     _padding: [u8; 7]
+}
+```
+
+**`BuyerFacts`**
+
+```rust
+/// BuyerFacts holding per wallet buyer stats
+pub struct BuyerFacts {
+    /// Token account holding buyer's tokens
+    pub token_account: Pubkey,
+    /// Identifier for this specific structure
+    pub discriminator: [u8; 8],
+    /// Amount of tokens allowed for this specific buyer
+    pub purchase_limit: u64,
+
+    /// Padding to remove SLOP in C memory layout alignment
+    /// Widest scalar = 32bytes
+    _padding: [u8; 8]
 }
 ```

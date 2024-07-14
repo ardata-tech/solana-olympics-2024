@@ -21,12 +21,10 @@ pub struct BuyerFacts {
     pub discriminator: [u8; 8],
     /// Amount of tokens allowed for this specific buyer
     pub purchase_limit: u64,
-    /// Canonical bump for BuyerFacts PDA
-    pub bump: u8,
 
     /// Padding to remove SLOP in C memory layout alignment
     /// Widest scalar = 32bytes
-    _padding: [u8; 8]
+    _padding: [u8; 16]
 }
 
 impl BuyerFacts {
