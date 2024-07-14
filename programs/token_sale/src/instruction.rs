@@ -8,7 +8,8 @@ use shank::{ShankContext, ShankInstruction};
 /// - OpenSale
 /// - ConfigureSale
 /// - CloseSale
-/// // TODO: AssignLimit
+///
+/// TODO: AssignLimit
 /// - AssignLimit
 ///
 /// For Buyer:
