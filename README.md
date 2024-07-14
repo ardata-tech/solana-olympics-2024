@@ -19,7 +19,15 @@ Merkle Tree Whitelist-Gated Token Sale
 
 ## Installation 
 
-## Development
+Run
+
+1. `yarn build:token_sale`
+
+Test
+
+1. `yarn build:token_sale`
+2. `yarn get:fixtures`
+3. `cargo test-sbf -p tests`
 
 ## Design Documentation
 
