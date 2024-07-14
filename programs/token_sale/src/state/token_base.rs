@@ -61,11 +61,7 @@ impl TokenBase {
         buyer: &Pubkey,
         proof: WhitelistProof,
     ) -> Result<bool, ProgramError> {
-        let member = match pubkey_to_sha256_leaf(buyer) {
-            Ok(m) => m,
-            Err(e) => return Err(e),
-        };
-
+        let member = pubkey_to_sha256_leaf(buyer);
         let merkle_proof = convert_whitelist_proof(proof);
         Ok(verify_membership(self.whitelist_root, merkle_proof, member))
     }
