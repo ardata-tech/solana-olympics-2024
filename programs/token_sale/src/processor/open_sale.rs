@@ -45,7 +45,8 @@ pub fn process_open_sale(
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // NOTE: Not ideal but good enough to reach submission
-    // inititalize token_base let rent_sysvar = &Rent::from_account_info(ctx.accounts.rent_sysvar)?;
+    // inititalize token_base
+    let rent_sysvar = &Rent::from_account_info(ctx.accounts.rent_sysvar)?;
     let (token_base_pda, token_base_bump) = find_token_base_pda(
         program_id,
         ctx.accounts.sale_authority.key,
