@@ -1,5 +1,5 @@
 use crate::merkle::WhitelistProof;
-use crate::merkle::{pubkey_to_sha256_leaf, verify_membership};
+use crate::merkle::{convert_whitelist_proof, pubkey_to_sha256_leaf, verify_membership};
 use borsh::{BorshDeserialize, BorshSerialize};
 use shank::ShankAccount;
 use solana_program::{program_error::ProgramError, pubkey::Pubkey};
@@ -13,8 +13,7 @@ use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 
 #[repr(C)]
 #[rustfmt::skip] // ensure manual struct ordering
-#[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
-#[discriminator_hash_input("token_sale::state::token_base")]
+#[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)] #[discriminator_hash_input("token_sale::state::token_base")]
 /// TokenBase holding the token sale configuraiton
 pub struct TokenBase {
     /// Authority that can configure token sale after initialization
@@ -67,6 +66,7 @@ impl TokenBase {
             Err(e) => return Err(e),
         };
 
-        Ok(verify_membership(self.whitelist_root, proof, member))
+        let merkle_proof = convert_whitelist_proof(proof);
+        Ok(verify_membership(self.whitelist_root, merkle_proof, member))
     }
 }

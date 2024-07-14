@@ -2,7 +2,10 @@
 use crate::error::TokenSaleError;
 use borsh::{BorshDeserialize, BorshSerialize};
 use hex::decode;
-use merkletreers::{merkle_proof_check::merkle_proof_check, Leaf, Proof, Root};
+use merkletreers::{
+    node::{Node, Side},
+    {merkle_proof_check::merkle_proof_check, Leaf, Proof, Root},
+};
 use sha256::digest;
 use solana_program::{program_error::ProgramError, pubkey::Pubkey};
 
@@ -43,4 +46,27 @@ pub fn pubkey_to_sha256_leaf(pubkey: &Pubkey) -> Result<Leaf, ProgramError> {
         }
         Err(_) => Err(TokenSaleError::FailedToDecodeSha256Hash.into()),
     }
+}
+
+/// Converts WhitelistProof into merkletreers::Proof
+pub fn convert_whitelist_proof(w_proof: WhitelistProof) -> Proof {
+    let mut merkle_proof = Proof::default();
+    for w_node in w_proof {
+        // default value
+        let mut n = Node {
+            data: [0u8; 32],
+            side: Side::LEFT,
+        };
+
+        n.data = w_node.data;
+
+        n.side = match w_node.side {
+            WhitelistSide::LEFT => Side::LEFT,
+            WhitelistSide::RIGHT => Side::RIGHT,
+        };
+
+        merkle_proof.push(n);
+    }
+
+    merkle_proof
 }

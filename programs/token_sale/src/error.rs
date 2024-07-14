@@ -37,6 +37,9 @@ pub enum TokenSaleError {
 
     #[error("Not whitelisted")]
     NotWhitelisted, // 9
+
+    #[error("Incompatible Proof Format")]
+    IncompatibleProof, // 10
 }
 
 // allow .into() for Custom Error to ProgramError conversion
