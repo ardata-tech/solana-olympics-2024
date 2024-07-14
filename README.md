@@ -1,10 +1,11 @@
 # Token Sale Program in Native Solana
 
-Whitelist-Gated Token Sale
+Merkle Tree Whitelist-Gated Token Sale
 
 ## Features
 **Main Features**
 - [x] Merkle Tree Whitelist-Gated Token Sale
+- [x] Per Wallet Address Purchase Limit
 - [x] Struct packing optimizations
 - [x] Verifiable Build with Docker (Custom Docker Image)
 - [ ] Frontend client builders (Also used in TS tests)

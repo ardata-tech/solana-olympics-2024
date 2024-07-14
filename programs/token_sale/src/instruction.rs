@@ -8,6 +8,8 @@ use shank::{ShankContext, ShankInstruction};
 /// - OpenSale
 /// - ConfigureSale
 /// - CloseSale
+/// // TODO: AssignLimit
+/// - AssignLimit
 ///
 /// For Buyer:
 /// - BuyToken
@@ -117,7 +119,7 @@ pub enum TokenSaleInstruction {
     #[account(
         1,
         name = "buyer_token_account",
-        desc = "Account of owned by the buyer where newly bought tokens get transferred to"
+        desc = "Account owned by the buyer where newly bought tokens get transferred to"
     )]
     #[account(
         2,

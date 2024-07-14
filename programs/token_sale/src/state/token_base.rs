@@ -14,7 +14,7 @@ use spl_discriminator::{ArrayDiscriminator, SplDiscriminate};
 #[repr(C)]
 #[rustfmt::skip] // ensure manual struct ordering
 #[derive(Clone, BorshSerialize, BorshDeserialize, Debug, ShankAccount, SplDiscriminate)]
-#[discriminator_hash_input("token_sale::state:token_base")]
+#[discriminator_hash_input("token_sale::state::token_base")]
 /// TokenBase holding the token sale configuraiton
 pub struct TokenBase {
     /// Authority that can configure token sale after initialization
@@ -31,8 +31,9 @@ pub struct TokenBase {
     /// Amount of lamports to transfer from Buyer to Vault 
     /// when purchasing tokens
     pub price: u64,
-    /// Amount of tokens allowed per buyer wallet
-    pub purchase_limit: u64,
+    /// Default purchase limit per user can be changed
+    /// per wallet via AssignLimit
+    pub default_purchase_limit: u64,
     /// Canonical bump for TokenBase PDA
     pub bump: u8,
 

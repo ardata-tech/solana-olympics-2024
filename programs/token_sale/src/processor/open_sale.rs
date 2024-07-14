@@ -38,7 +38,7 @@ pub fn process_open_sale(
     //
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
-    // - account is unintialized
+    // - account is uninitialized
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // - owner is token_sale (this) program
@@ -56,7 +56,7 @@ pub fn process_open_sale(
         "token_base"
     );
 
-    // - account is unintialized
+    // - account is uninitialized
     let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
     require!(
         token_base.is_uninitialized(),
@@ -135,7 +135,7 @@ pub fn process_open_sale(
     token_base.sale_authority = *sale_authority.key;
     token_base.whitelist_root = whitelist_root;
     token_base.price = price;
-    token_base.purchase_limit = purchase_limit;
+    token_base.default_purchase_limit = purchase_limit;
     token_base.bump = token_base_bump; // store canonical bump
 
     Ok(())

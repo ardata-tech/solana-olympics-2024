@@ -1,7 +1,8 @@
 use crate::error::TokenSaleError;
+use crate::merkle::WhitelistProof;
 use crate::state::{find_token_base_pda, TokenBase};
 use crate::{
-    instruction::accounts::{Context, OpenSaleAccounts},
+    instruction::accounts::{BuyTokenAccounts, Context},
     require,
 };
 use borsh::BorshDeserialize;
@@ -10,27 +11,25 @@ use solana_program::{
 };
 use spl_token::{error::TokenError, state::Mint};
 
-/// Open a Token Sale with the given config
+/// Buy N amount of Tokens
 ///
-/// Validates the accounts and data passed then
-/// initializes the [`TokenBase`] (config)
+/// - Initializes Associated Token Account for Buyer
+/// - Transfers SOL (lamports) from Buyer to Vault
+/// - Mints Token to Buyer account
 ///
 /// Accounts
 /// 0. `[WRITE]`    `Token Base` config account, PDA generated offchain
-/// 1. `[]`         `Mint` account
-/// 1. `[]`         `Vault` account
-/// 2. `[SIGNER]`   `Sale Authority` account
+/// 1. `[WRITE]`         `Buyer` token account
+/// 1. `[SIGNER]`   `Buyer` account
 ///
 /// Instruction Data
-/// - price: u64,
-/// - purchase_limit: u64,
-/// - whitelist_root: [u8; 32],
-pub fn process_open_sale(
+/// - amount: u64,
+/// - proof: WhitelistProof
+pub fn process_buy_token(
     program_id: &Pubkey,
-    ctx: Context<OpenSaleAccounts>,
-    price: u64,
-    purchase_limit: u64,
-    whitelist_root: [u8; 32],
+    ctx: Context<BuyTokenAccounts>,
+    amount: u64,
+    proof: WhitelistProof,
 ) -> ProgramResult {
     //---------- Account Validations ----------
 
@@ -38,7 +37,7 @@ pub fn process_open_sale(
     //
     // - owner is token_sale (this) program
     // - correct allocation length (TokenBase::LEN)
-    // - account is unintialized
+    // - account is initialized
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // - owner is token_sale (this) program
@@ -56,72 +55,42 @@ pub fn process_open_sale(
         "token_base"
     );
 
-    // - account is unintialized
+    // - account is initialized
     let mut token_base = TokenBase::try_from_slice(&token_base_data)?;
     require!(
-        token_base.is_uninitialized(),
-        ProgramError::AccountAlreadyInitialized,
+        token_base.is_initialized(),
+        ProgramError::UninitializedAccount,
         "token_base"
     );
 
     // - token_base seeds must be ["token_base", pubkey(mint)]
-    let (token_base_pda, token_base_bump) = find_token_base_pda(program_id, ctx.accounts.mint.key);
+    let (token_base_pda, token_base_bump) = find_token_base_pda(program_id, &token_base.mint);
     require!(
         *ctx.accounts.token_base.key == token_base_pda,
         TokenSaleError::UnexpectedPDASeeds,
         "token_base"
     );
 
-    // 1. mint
+    // 1. buyer_token_account
     //
-    // - is_initialized is true
-    // - mint_authority is token_base sale_authority
-    let mint = ctx.accounts.mint;
-    let mint_data = mint.try_borrow_data()?;
-    let mint_state = Mint::unpack(&mint_data)?;
+    // - mint must be token_base mint
 
-    // - is_initialized is true
-    require!(
-        mint_state.is_initialized,
-        TokenError::UninitializedState,
-        "mint"
-    );
-
-    // - mint_authority is token_base sale_authority
-    require!(
-        mint_state.mint_authority == token_base.sale_authority.into(),
-        TokenSaleError::MintAndSaleAuthorityMismatch,
-        "mint"
-    );
-
-    // 2. vault
-    //
-    // - not executable
-    let vault = ctx.accounts.vault;
-
-    // - not executable
-    require!(
-        !vault.executable,
-        TokenSaleError::MustBeNonExecutable,
-        "vault"
-    );
-
-    // 3. sale_authority
+    // 2. buyer
     //
     // - not executable
     // - must be signer
-    let sale_authority = ctx.accounts.sale_authority;
+    let buyer = ctx.accounts.buyer;
 
     // - not executable
     require!(
-        !sale_authority.executable,
+        !buyer.executable,
         TokenSaleError::MustBeNonExecutable,
         "sale_authority"
     );
 
     // - must be signer
     require!(
-        sale_authority.is_signer,
+        buyer.is_signer,
         TokenSaleError::SaleAuthorityNotSigner,
         "sale_authority"
     );
@@ -129,14 +98,6 @@ pub fn process_open_sale(
     //---------- Data Validations (if any) ----------
 
     //---------- Executing Instruction ----------
-
-    token_base.mint = *mint.key;
-    token_base.vault = *vault.key;
-    token_base.sale_authority = *sale_authority.key;
-    token_base.whitelist_root = whitelist_root;
-    token_base.price = price;
-    token_base.purchase_limit = purchase_limit;
-    token_base.bump = token_base_bump; // store canonical bump
 
     Ok(())
 }

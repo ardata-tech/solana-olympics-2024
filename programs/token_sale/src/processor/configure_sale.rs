@@ -113,7 +113,7 @@ pub fn process_configure_sale(
     // - whitelist_root
     token_base.whitelist_root = whitelist_root;
     // - purchase_limit
-    token_base.purchase_limit = purchase_limit;
+    token_base.default_purchase_limit = purchase_limit;
 
     Ok(())
 }
