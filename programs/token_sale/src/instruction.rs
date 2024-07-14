@@ -44,6 +44,8 @@ pub enum TokenSaleInstruction {
         name = "sale_authority",
         desc = "Account who has authority to manage the token sale"
     )]
+    #[account(4, name = "rent_sysvar", desc = "Rent Sysvar")]
+    #[account(5, name = "system_program", desc = "System Program")]
     OpenSale {
         /// Price of token
         price: u64,

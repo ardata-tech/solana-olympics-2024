@@ -62,8 +62,9 @@ pub fn process_configure_sale(
         "token_base"
     );
 
-    // - token_base seeds must be ["token_base", pubkey(mint)]
-    let (token_base_pda, _) = find_token_base_pda(program_id, &token_base.mint);
+    // - token_base seeds must be ["token_base", pubkey(sale_authority), pubkey(mint)]
+    let (token_base_pda, _) =
+        find_token_base_pda(program_id, &token_base.sale_authority, &token_base.mint);
     require!(
         *ctx.accounts.token_base.key == token_base_pda,
         TokenSaleError::UnexpectedPDASeeds,

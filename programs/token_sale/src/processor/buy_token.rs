@@ -74,8 +74,12 @@ pub fn process_buy_token(
         "token_base"
     );
 
-    // - token_base seeds must be ["token_base", pubkey(mint)]
-    let (token_base_pda, _) = find_token_base_pda(program_id, &token_base.mint);
+    // - token_base seeds must be ["token_base", pubkey(sale_authority), pubkey(mint)]
+    let (token_base_pda, _) = find_token_base_pda(
+        program_id,
+        &ctx.accounts.sale_authority.key,
+        &ctx.accounts.mint.key,
+    );
     require!(
         *ctx.accounts.token_base.key == token_base_pda,
         TokenSaleError::UnexpectedPDASeeds,
@@ -163,7 +167,7 @@ pub fn process_buy_token(
     );
 
     // - buyer_facts seeds must be ['buyer_facts', `pubkey(buyer)`, `pubkey(mint)`]
-    let (buyer_facts_pda, _) =
+    let (buyer_facts_pda, bump) =
         find_buyer_facts_pda(program_id, ctx.accounts.buyer.key, &token_base.mint);
 
     require!(
@@ -262,6 +266,7 @@ pub fn process_buy_token(
 
     buyer_facts.token_account = *ctx.accounts.buyer_token_account.key;
     buyer_facts.purchase_limit = token_base.default_purchase_limit;
+    buyer_facts.bump = bump;
 
     Ok(())
 }

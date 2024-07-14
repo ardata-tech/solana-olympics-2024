@@ -5,10 +5,11 @@
   "scripts": {
     "build:token_sale": "scripts/build.sh token_sale",
     "vbuild:token_sale": "scripts/verifiable-build.sh token_sale",
-    "test": "jest --verbose ./tests/",
+    "test": "pushd programs && cargo test-sbf --verbose --package tests && popd",
+    "test:ts": "jest --verbose ./tests/",
     "test:token_sale": "jest ./tests/counter/unit/initialize.test.ts",
 	"shank:idl:dev": "shank idl --crate-root ./programs/token_sale --out-dir ./programs/target/deploy",
-	"shank:idl:": "shank idl --crate-root ./programs/token_sale --out-dir ./programs/target/deploy"
+    "get:fixtures": "rm ./programs/tests/fixtures/token_sale.so && cp ./programs/target/deploy/token_sale.so ./programs/tests/fixtures"
   },
   "dependencies": {
     "@solana/web3.js": "^1.93.2",
