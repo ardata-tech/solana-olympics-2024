@@ -2,6 +2,8 @@
 
 #[cfg(test)]
 mod tests {
+    use std::assert_eq;
+
     use borsh::{BorshDeserialize, BorshSerialize};
     use spl_token::{
         id, instruction,
@@ -20,6 +22,7 @@ mod tests {
         solana_sdk::{
             instruction::{AccountMeta, Instruction},
             message::Message,
+            msg,
             program_pack::Pack,
             pubkey::Pubkey,
             rent::Rent,
@@ -30,7 +33,6 @@ mod tests {
             sysvar::rent::ID as RENT_SYSVAR_ID,
             transaction::Transaction,
         },
-        std::assert_eq,
     };
 
     #[tokio::test]
@@ -78,25 +80,14 @@ mod tests {
 
         // create token_base
         let (token_base_pda, _) = find_token_base_pda(&program_id, &payer.pubkey(), &mint.pubkey());
-        // let transaction = Transaction::new_signed_with_payer(
-        //     &[system_instruction::create_account(
-        //         &payer.pubkey(),
-        //         &token_base_pda,
-        //         rent.minimum_balance(TokenBase::LEN),
-        //         TokenBase::LEN as u64,
-        //         &program_id,
-        //     )],
-        //     Some(&payer.pubkey()),
-        //     &[&payer, &mint],
-        //     recent_blockhash,
-        // );
-        // banks_client.process_transaction(transaction).await.unwrap();
 
         let vault = Keypair::new();
 
+        let price = 100000000000;
+        let default_purchase_limit = 100;
         let instruction = TokenSaleInstruction::OpenSale {
-            price: 1000,
-            purchase_limit: 100,
+            price,
+            purchase_limit: default_purchase_limit,
             whitelist_root: [0u8; 32],
         };
 
@@ -106,11 +97,6 @@ mod tests {
         let transaction = Transaction::new_signed_with_payer(
             &[Instruction {
                 program_id,
-                // Accounts
-                // 0. `[WRITE]`    `Token Base` config account, PDA generated offchain
-                // 1. `[]`         `Mint` account
-                // 1. `[]`         `Vault` account
-                // 2. `[SIGNER]`   `Sale Authority` account
                 accounts: vec![
                     AccountMeta::new(token_base_pda, false),
                     AccountMeta::new_readonly(mint.pubkey(), false),
@@ -128,6 +114,7 @@ mod tests {
 
         banks_client.process_transaction(transaction).await.unwrap();
 
+        // instruction went through
         assert_eq!(true, true);
     }
 }

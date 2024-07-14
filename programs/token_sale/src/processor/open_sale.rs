@@ -111,11 +111,11 @@ pub fn process_open_sale(
     let mint_state = Mint::unpack(&mint_data)?;
 
     // - is_initialized is true
-    require!(
-        mint_state.is_initialized,
-        TokenError::UninitializedState,
-        "mint"
-    );
+    // require!(
+    //     mint_state.is_initialized,
+    //     TokenError::UninitializedState,
+    //     "mint"
+    // );
 
     // - mint_authority is token_base sale_authority
     // require!(

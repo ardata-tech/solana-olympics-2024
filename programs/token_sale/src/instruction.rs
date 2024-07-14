@@ -69,15 +69,22 @@ pub enum TokenSaleInstruction {
     )]
     #[account(
         1,
-        signer,
-        name = "sale_authority",
-        desc = "Account who has authority to manage the token sale"
+        name = "mint",
+        desc = "Account for holding the mint details of the token being sold"
     )]
     #[account(
         2,
         name = "new_vault",
-        desc = "New account for holding the funds raised from token sale"
+        desc = "Account for holding the funds raised from token sale"
     )]
+    #[account(
+        3,
+        signer,
+        name = "sale_authority",
+        desc = "Account who has authority to manage the token sale"
+    )]
+    #[account(4, name = "rent_sysvar", desc = "Rent Sysvar")]
+    #[account(5, name = "system_program", desc = "System Program")]
     ConfigureSale {
         /// Price of token
         price: u64,

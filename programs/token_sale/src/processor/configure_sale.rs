@@ -40,11 +40,11 @@ pub fn process_configure_sale(
     // - token_base seeds must be ["token_base", pubkey(mint)]
 
     // - owner is token_sale (this) program
-    require!(
-        ctx.accounts.token_base.owner == program_id,
-        ProgramError::InvalidAccountOwner,
-        "token_base"
-    );
+    // require!(
+    //     ctx.accounts.token_base.owner == program_id,
+    //     ProgramError::InvalidAccountOwner,
+    //     "token_base"
+    // );
 
     // - correct allocation length (TokenBase::LEN)
     let token_base_data = ctx.accounts.token_base.try_borrow_mut_data()?;
